@@ -8,11 +8,14 @@ const commentRoutes = require('./routes/comments');
 const blogsRoute = require('./routes/blogs');
 const singleBlogRoute = require('./routes/singleBlog')
 const port = process.env.PORT;
-
-
 require('dotenv').config();
 
-app.use(cors());
+const crosOptions = {
+    origin: true,
+    credentials: true,
+}
+
+app.use(cors(crosOptions));
 app.use(cookieParser());
 app.use(express.static('public'));
 app.use(express.json());

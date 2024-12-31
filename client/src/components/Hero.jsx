@@ -19,7 +19,7 @@ const Hero = () => {
         <p className="lead">
           Discover amazing articles, stories, and insights from around the world.
         </p>
-        <a href="/blog" className="btn btn-primary btn-lg">
+        <a href="/blog" className="btn btn-dark btn-lg">
           Explore Blogs
         </a>
       </div>

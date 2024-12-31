@@ -6,13 +6,16 @@ const createBlog = async (req, res) => {
     try{        
         const { title, content, author } = req.body;
 
+        const user = req.user;
         const blog_img = req.file.filename;
         const newBlog = new Blog({
             title,
             content,
             blog_img,
-            author
+            author,
+            createBy: user.email
         });
+
 
         const savedBlog = await newBlog.save();
 

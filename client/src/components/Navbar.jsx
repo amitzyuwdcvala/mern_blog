@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Navbar = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
+
+
+
+  useEffect(() => {
+    // Check for the token in cookies
+    const token = Cookies.get('authToken');
+    console.log("Token:", token);
+    setIsLogin(!!token); // Set login status based on the presence of the token
+  }, []);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -26,7 +36,7 @@ const Navbar = () => {
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
               <Link className="nav-link" to="/">
-                Home
+                Blogs
               </Link>
             </li>
 
