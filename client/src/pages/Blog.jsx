@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { BaseUrl, get } from "../services/endpoint";
 import { useParams } from "react-router";
+import Cookies from "js-cookie";
 
 const Blog = () => {
   const [blog, setBlog] = useState(null); // Initialize as null to differentiate loading state
   const { id } = useParams();
+  const [isLogin, setIsLogin] = useState(false);
 
   const SignlePost = async () => {
     try {
@@ -16,9 +18,14 @@ const Blog = () => {
       console.error("Error fetching blog:", err);
     }
   };
+  
 
   useEffect(() => {
     SignlePost();
+
+    const token = Cookies.get("authToken");
+    console.log("Token:", token);
+    setIsLogin(!!token);
   }, []);
 
   if (!blog) {
@@ -55,53 +62,63 @@ const Blog = () => {
               {blog.content || "No content available for this blog."}
             </p>
 
-            <h3 className="mt-5 mb-3">Leave a Comment</h3>
+            {isLogin ? (
+              <>
+                <h3 className="mt-5 mb-3">Leave a Comment</h3>
 
-            <form action="">
-              <div className="mb-4">
-                <label htmlFor="comment" className="form-label">
-                  Comment
-                </label>
-                <textarea
-                  className="form-control"
-                  id="comment"
-                  rows="4"
-                  placeholder="Write your comment here..."
-                ></textarea>
-                <button className="btn btn-primary mt-3">Submit Comment</button>
-              </div>
-
-              <hr />
-
-              <h3>Comments</h3>
-
-              {blog.comments && blog.comments.length > 0 ? (
-                blog.comments.map((comment) => (
-                  <div
-                    key={comment._id}
-                    className="bg-secondary p-3 rounded mb-3 d-flex"
-                  >
-                    <img
-                      src={`${BaseUrl}/images/${comment.userId?.profile_img}`}
-                      alt="profile_img"
-                      style={{
-                        width: "45px",
-                        height: "45px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        marginRight: "15px",
-                      }}
-                    />
-                    <div>
-                      <h5 className="mb-1">{comment.userId?.username || "Anonymous"}</h5>
-                      <p>{comment.comment}</p>
-                    </div>
+                <form action="">
+                  <div className="mb-4">
+                    <label htmlFor="comment" className="form-label">
+                      Comment
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="comment"
+                      rows="4"
+                      placeholder="Write your comment here..."
+                    ></textarea>
+                    <button className="btn btn-primary mt-3" onClick={handleCommentSubmit}>
+                      Submit Comment
+                    </button>
                   </div>
-                ))
-              ) : (
-                <p>No comments yet. Be the first to comment!</p>
-              )}
-            </form>
+                </form>
+              </>
+            ) : (
+              ""
+            )}
+
+            <hr />
+
+            <h3>Comments</h3>
+
+            {blog.comments && blog.comments.length > 0 ? (
+              blog.comments.map((comment) => (
+                <div
+                  key={comment._id}
+                  className="bg-secondary p-3 rounded mb-3 d-flex"
+                >
+                  <img
+                    src={`${BaseUrl}/images/${comment.userId?.profile_img}`}
+                    alt="profile_img"
+                    style={{
+                      width: "45px",
+                      height: "45px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      marginRight: "15px",
+                    }}
+                  />
+                  <div>
+                    <h5 className="mb-1">
+                      {comment.userId?.username || "Anonymous"}
+                    </h5>
+                    <p>{comment.comment}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No comments yet. Be the first to comment!</p>
+            )}
           </div>
         </div>
       </div>

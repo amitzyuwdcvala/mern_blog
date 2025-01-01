@@ -1,19 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
+import {post} from '../services/endpoint';
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isLogin, setIsLogin] = useState(false);
 
-
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for the token in cookies
+
     const token = Cookies.get('authToken');
     console.log("Token:", token);
-    setIsLogin(!!token); // Set login status based on the presence of the token
+    setIsLogin(!!token); 
   }, []);
+
+  const handleLogout = async () => {
+    Cookies.remove('authToken');
+    setIsLogin(false);
+    try{
+      const request = await post('/api/auth/logout');
+      const response = request.data;
+      if(request.status == 200){
+        navigate('/login');
+        alert("Logged out successfully!");
+      }
+    }catch(err){
+      console.error(err);
+    }
+  }
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -61,7 +78,7 @@ const Navbar = () => {
                     Profile
                   </Link>
                 </li>
-                <li className="nav-item">
+                <li className="nav-item" onClick={handleLogout}>
                   <Link className="nav-link" to="/logout">
                     Logout
                   </Link>

@@ -14,7 +14,6 @@ const GetSingleComment = async (req, res) => {
             }
         }).populate('createBy');
 
-        console.log("Found Blog:", FindPost);
 
         if (!FindPost) {
             return res.status(404).json({ message: 'Blog not found' });

@@ -15,12 +15,12 @@ const AddComment = async (req, res) => {
 
         const existBlog = await Blog.findById(blogId);
 
-        console.log(existBlog);
 
         if (!existBlog) {
             return res.status(404).json({ message: "Blog not found" });
         }
 
+        //pushing the comment into the comments array 
         existBlog.comments.push(newComment._id);
         await existBlog.save();
         res.status(201).json({ success: true, message: "Comment added successfully", comment: newComment });
